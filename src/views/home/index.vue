@@ -3,7 +3,7 @@
  * @since: 2023-02-27
 -->
 <script setup lang="ts">
-  import sketchRule from './components/sketchRule1.vue';
+import sketchRule from './components/sketchRule1.vue'
 </script>
 
 <template>
@@ -20,13 +20,13 @@
   width: 100vw;
   height: 100vh;
   display: flex;
-  .side  {
-    width: 40%;
+  .side {
+    width: 10%;
     height: 100%;
     border-right: 1px solid;
   }
   .content {
-    width: 60%;
+    width: 90%;
     height: 100%;
     position: relative;
   }

@@ -1,11 +1,14 @@
 <template>
+  <div class="top">缩放比例:{{ state.scale }}</div>
+  <button class="right" @click="showLineClick">辅助线开关</button>
   <div class="wrapper">
     <!--  这个可以传入图标 -->
     <SketchRule
+
       :thick="state.thick"
       :scale="state.scale"
-      :width="1600"
-      :height="800"
+      :width="580"
+      :height="580"
       :start-x="state.startX"
       :start-y="state.startY"
       :shadow="shadow"
@@ -25,53 +28,54 @@
       </div>
     </div>
   </div>
+  <BlackSketchRule></BlackSketchRule>
 </template>
-<script setup lang="ts">
+<script setup>
 import { SketchRule } from 'vue3-sketch-ruler'
 import 'vue3-sketch-ruler/lib/style.css'
-import { computed, ref, reactive, onMounted, nextTick } from 'vue'
 
+import { computed, ref, reactive, onMounted, nextTick } from 'vue'
 const rectWidth = 600
 const rectHeight = 320
-const screensRef: any = ref(null)
-const containerRef: any = ref(null)
+const screensRef = ref(null)
+const containerRef = ref(null)
 const state = reactive({
-  scale: 0.75, //658813476562495, //1,
+  scale: 0.95, //658813476562495, //1,
   startX: 0,
   startY: 0,
   lines: {
     h: [433, 588],
-    v: [33, 143],
+    v: [33, 143]
   },
   thick: 20,
   isShowRuler: true, // 显示标尺
-  isShowReferLine: false, // 显示参考线
+  isShowReferLine: false // 显示参考线
 })
 const shadow = computed(() => {
   return {
     x: 0,
     y: 0,
     width: rectWidth,
-    height: rectHeight,
+    height: rectHeight
   }
 })
 const canvasStyle = computed(() => {
   return {
     width: rectWidth,
     height: rectHeight,
-    transform: `scale(${state.scale})`,
+    transform: `scale(${state.scale})`
   }
 })
 onMounted(() => {
   // 滚动居中
   screensRef.value.scrollLeft =
-    containerRef.value.getBoundingClientRect().width / 2 - 400
+  containerRef.value.getBoundingClientRect().width / 2 - 400
 })
+
 const handleScroll = () => {
-  const screensRect = document
-    .querySelector('#screens')!
-    .getBoundingClientRect()
-  const canvasRect = document.querySelector('#canvas')!.getBoundingClientRect()
+  const screensRect = document.querySelector('#screens').getBoundingClientRect()
+  const canvasRect = document.querySelector('#canvas').getBoundingClientRect()
+
   // 标尺开始的刻度
   const startX =
     (screensRect.left + state.thick - canvasRect.left) / state.scale
@@ -79,16 +83,11 @@ const handleScroll = () => {
   state.startX = startX
   state.startY = startY
 }
-const handleCornerClick = (e: any) => {
+const handleCornerClick = e => {
   console.log('handleCornerClick', e)
 }
 // 控制缩放值
-const handleWheel = (e: {
-  ctrlKey: any
-  metaKey: any
-  preventDefault: () => void
-  deltaY: number
-}) => {
+const handleWheel = (e) => {
   if (e.ctrlKey || e.metaKey) {
     e.preventDefault()
     const nextScale = parseFloat(
@@ -100,6 +99,10 @@ const handleWheel = (e: {
     handleScroll()
   })
 }
+const showLineClick = () => {
+  state.isShowReferLine = !state.isShowReferLine
+  console.log(state.isShowReferLine, 'state.isShowReferLine')
+}
 </script>
 <style lang="scss">
 .top {
@@ -107,6 +110,7 @@ const handleWheel = (e: {
   left: 0px;
   font-size: 20px;
 }
+
 .right {
   top: 200px;
   position: absolute;
@@ -119,51 +123,58 @@ body {
   overflow: hidden;
   font-family: sans-serif;
 }
+
 body * {
   box-sizing: border-box;
   user-select: none;
 }
+
 .wrapper {
   position: absolute;
+  top: 100px;
+  left: 140px;
   /* 特别注意,这个width要和传入组件的width成对应关系,
    也就是 780width +thick20 =800
-   否则影子不和容器搭配
+   否则影子不和容器搭配,这个在2X中会进行自动匹配修正,省得配置麻烦
     */
-  width: 1600px;
-  height: 800px;
-  background-color: #fafafc;
+  width: 600px;
+  height: 600px;
+  background-color: #f5f5f5;
   border: 1px solid #dadadc;
-  background-image: linear-gradient(#fafafc 14px, transparent 0),
-    linear-gradient(90deg, transparent 14px, #373739 0);
-  background-size: 15px 15px, 15px 15px;
 }
+
 #screens {
   position: absolute;
   width: 100%;
   height: 100%;
   overflow: auto;
 }
+
 .screen-container {
   position: absolute;
   width: 5000px;
   height: 3000px;
 }
+
 .scale-value {
   position: absolute;
   bottom: 100%;
   left: 0;
 }
+
 .button {
   position: absolute;
   bottom: 100%;
   left: 100px;
 }
+
 #canvas {
   position: absolute;
   top: 80px;
   left: 50%;
   width: 600px;
   height: 320px;
+  background: url('../assets/bg.jfif') no-repeat;
   background-size: 100% 100%;
   transform-origin: 50% 0;
 }
